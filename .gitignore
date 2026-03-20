@@ -5,7 +5,7 @@ node_modules/
 
 # Build output
 dist/
-docs/
+# docs/
 
 # Vite cache
 node_modules/.vite/
