@@ -1,35 +1,39 @@
 import { motion } from "motion/react";
 import { useInView } from "motion/react";
 import { useRef, useState } from "react";
-import { Mail, Linkedin, Github, Twitter, Send } from "lucide-react";
+import { Mail, Linkedin, Github, Twitter } from "lucide-react";
 
 export function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleSubmit = (e: React.FormEvent) => {
+    // Let Formspree handle submission
+    setTimeout(() => {
+      setFormData({ name: "", email: "", message: "" });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 4000); // hide after 4s
+    }, 500);
   };
 
   return (
     <section id="contact" className="py-24 px-6 relative overflow-hidden">
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e27] via-[#1a1d3a] to-transparent" />
-      
+
       <div className="max-w-6xl mx-auto relative z-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -50,7 +54,8 @@ export function Contact() {
             className="text-xl text-gray-300 max-w-2xl mx-auto"
             style={{ fontFamily: "'Crimson Pro', serif" }}
           >
-            Have a project in mind or just want to say hello? I'd love to hear from you.
+            Have a project in mind or just want to say hello? I'd love to hear
+            from you.
           </p>
         </motion.div>
 
@@ -61,13 +66,14 @@ export function Contact() {
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              action="https://formspree.io/f/mbdzbrqg" // replace with your Formspree endpoint
+              method="POST"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-[#14b8a6] mb-2"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
+                <label htmlFor="name" className="block text-[#14b8a6] mb-2">
                   Your Name
                 </label>
                 <input
@@ -76,19 +82,14 @@ export function Contact() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300 focus:outline-none focus:border-[#14b8a6] transition-colors duration-300"
-                  style={{ fontFamily: "'Crimson Pro', serif" }}
-                  placeholder="John Doe"
+                  placeholder="Enter your full name"
                   required
+                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-[#14b8a6] mb-2"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
+                <label htmlFor="email" className="block text-[#14b8a6] mb-2">
                   Your Email
                 </label>
                 <input
@@ -97,42 +98,40 @@ export function Contact() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300 focus:outline-none focus:border-[#14b8a6] transition-colors duration-300"
-                  style={{ fontFamily: "'Crimson Pro', serif" }}
-                  placeholder="john@example.com"
+                  placeholder="Enter your email address"
                   required
+                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-[#14b8a6] mb-2"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
+                <label htmlFor="message" className="block text-[#14b8a6] mb-2">
                   Message
                 </label>
                 <textarea
                   id="message"
                   name="message"
+                  rows={6}
                   value={formData.message}
                   onChange={handleChange}
-                  rows={6}
-                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300 focus:outline-none focus:border-[#14b8a6] transition-colors duration-300 resize-none"
-                  style={{ fontFamily: "'Crimson Pro', serif" }}
-                  placeholder="Tell me about your project..."
+                  placeholder="Write your message here..."
                   required
-                />
+                  className="w-full px-4 py-3 bg-[#12152e] border border-[#14b8a6]/20 rounded-lg text-gray-300 resize-none"
+                ></textarea>
               </div>
 
               <button
                 type="submit"
-                className="group w-full px-8 py-4 bg-[#14b8a6] text-[#0a0e27] rounded-lg transition-all duration-300 hover:bg-[#0d9488] hover:shadow-lg hover:shadow-[#14b8a6]/30 flex items-center justify-center gap-2"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                className="group w-full px-8 py-4 bg-[#14b8a6] text-[#0a0e27] rounded-lg transition-all duration-300 hover:bg-[#0d9488]"
               >
                 Send Message
-                <Send size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
               </button>
+
+              {success && (
+                <p className="text-green-400 mt-4">
+                  ✅ Message sent successfully!
+                </p>
+              )}
             </form>
           </motion.div>
 
@@ -152,7 +151,7 @@ export function Contact() {
               </h3>
               <div className="space-y-4">
                 <a
-                  href="mailto:alex.morgan@example.com"
+                  href="mailto:kagithathusheelgoud@gmail.com"
                   className="flex items-center gap-4 text-gray-300 hover:text-[#14b8a6] transition-colors duration-300 group"
                   style={{ fontFamily: "'Crimson Pro', serif" }}
                 >
@@ -199,7 +198,9 @@ export function Contact() {
               <p
                 className="text-gray-300 leading-relaxed"
                 style={{ fontFamily: "'Crimson Pro', serif" }}
-              >I'm currently available for freelance work and exciting collaborations. Let's create something amazing together!</p>
+              >
+                I'm currently available for freelance work and exciting collaborations. Let's create something amazing together!
+              </p>
             </div>
           </motion.div>
         </div>
